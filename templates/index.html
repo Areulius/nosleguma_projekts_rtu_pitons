@@ -1,18 +1,33 @@
+<!DOCTYPE html>
+
 <html>
     <head>
         <meta charset="UTF-8">
         <title>Saved Reddit Posts</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+        <script src="{{ url_for('static', filename='script.js') }}"></script>
     </head>
+
     <body>
         <h1>Saved Posts</h1>
         {% for post in posts %}
+
             <div class="post">
-            <h3>{{ post.title }}</h3>
-            {% if post.content != "" %}
-            <p>{{ post.content }}</p>
+            <h3>(<a href="https://www.reddit.com/r/{{ post.subreddit }}" target="_blank">r/{{ post.subreddit }}</a>) 
+                <a href="{{ post.url }}" target="_blank">{{ post.title }}</a> </h3>
+            
+            {% if (post.content|length > 1000) %}
+                <p>
+                    <span id="text-preview" onclick="">{{ post.content[:1000] }}...</span>
+                    <span id="text-full" style="display: none;">{{ post.content }}</span>
+                    <button id="more-text-button" onclick="toggleText(this)">Show More</button>
+                </p>
+            {% elif (post.content != "") %}
+                <p>{{ post.content }}</p>
             {% else %}
-            <p>{{ "!!no content!!" }}</p>
+                <p>!!no text content!!</p>
             {% endif %}
+
             </div>
         {% endfor %}
     </body>

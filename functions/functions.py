@@ -1,8 +1,8 @@
 import praw
 import json
 
-POSTS_FILE = "posts.txt"
-COMMENTS_FILE = "comments.txt"
+POSTS_FILE = "txt_files/posts.txt"
+COMMENTS_FILE = "txt_files/comments.txt"
 
 
 # setup praw to have access to reddit api by asking for user to input all needed info
@@ -35,7 +35,7 @@ def setup_reddit():
         correct_input = True
     return reddit
 
-def clear_file(): open("posts.txt", "w").close()
+def clear_file(filename): open(filename, "w").close()
 
 # convert each submission into a dictionary object and then append it to text file in a json format, each object is on a new line
 def write_to_file(type, subreddit, title, content, top5comments, url):

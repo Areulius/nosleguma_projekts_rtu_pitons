@@ -1,8 +1,6 @@
 import praw
-from functions.functions import *
 from functions.classes import *
 # from openai import OpenAI
-
 
 # konstantes
 POSTS_FILE = "txt_files/posts.txt"
@@ -11,31 +9,44 @@ COMMENTS_FILE = "txt_files/comments.txt"
 if __name__ == '__main__':
 
     reddit = setup_reddit()
-
-    savedCount = 0
-
-    post_listt = PostList()
-    for item in reddit.user.me().saved(limit=5):
-        if isinstance(item, praw.models.Submission):
-            # write_to_file('post', f"{item.subreddit}", f"{item.title}", f"{item.selftext}", "none for now", f"https://redd.it/{item.id}")
-            
-            post_listt.add(Post(f"{item.id}", f"{item.subreddit}", f"{item.title}", f"{item.selftext}", ""))
+    saved_count = 0
+    command = [""]
     
-        elif isinstance(item, praw.models.Comment):
-            # write_to_file('comment', f"{item.subreddit}", None, f"{item.body}", None, f"https://www.reddit.com{item.permalink}")
-            print("comment")
+    # while command[0] != "exit":
+    #     command = input("Command: ").split()
         
-        savedCount += 1
+    #     match command[0]:
+    #         case "print":
+    #             print("print case")
+    #         case "exit":
+    #             print("Exiting! :)")
+    #         case _:
+    #             print("default case")
+           
+    # iet cauri visiem lietotāja saglabātajiem postiem un komentāriem un saglabāt tos sarakstā     
+    postu_sar = PostList()
+    for item in reddit.user.me().saved(limit=3):
+        
+        if isinstance(item, praw.models.Comment): # ja saglabāts ir komentārs, tad fokuss tiek mainīts uz postu virs komentāra
+            print("COMMENT")
+            item = reddit.submission(item.link_id[3:])
+            # item = item.submission
+        print(type(item))
+        postu_sar.add(Post.create(item))
+        
+        
+
+
+        saved_count += 1
 
     clear_file(POSTS_FILE)
-    post_listt.write_to_file(POSTS_FILE)
-    print("PRINTING LIST 1\n\n")
-    post_listt.print()
+    postu_sar.write_to_file(POSTS_FILE)
+    print("PRINTING LIST 1\n")
+    postu_sar.print()
     
-    list2 = PostList()
-    list2.load_from_file(POSTS_FILE, post_listt.post_count)
-    list2.write_to_file(POSTS_FILE)
-    print("PRINTING LIST 2\n\n")
-    list2.print()
+    postu_sar2 = PostList()
+    postu_sar.load_from_file(POSTS_FILE, postu_sar.post_count)
+    print("PRINTING LIST 2\n")
+    postu_sar2.print()
     
-    print(savedCount)
+    print(saved_count)

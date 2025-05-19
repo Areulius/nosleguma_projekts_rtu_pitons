@@ -30,12 +30,7 @@ if __name__ == '__main__':
         if isinstance(item, praw.models.Comment): # ja saglabāts ir komentārs, tad fokuss tiek mainīts uz postu virs komentāra
             print("COMMENT")
             item = reddit.submission(item.link_id[3:])
-            # item = item.submission
-        print(type(item))
         postu_sar.add(Post.create(item))
-        
-        
-
 
         saved_count += 1
 
@@ -45,7 +40,7 @@ if __name__ == '__main__':
     postu_sar.print()
     
     postu_sar2 = PostList()
-    postu_sar.load_from_file(POSTS_FILE, postu_sar.post_count)
+    postu_sar2.load_from_file(POSTS_FILE, postu_sar.post_count)
     print("PRINTING LIST 2\n")
     postu_sar2.print()
     

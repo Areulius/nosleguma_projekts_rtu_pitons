@@ -100,7 +100,7 @@ class PostList:
                 Comment_list = []
                 for comment_text in eval(p[4]):
                     Comment_list.append(Comment(comment_text))
-                self.list[i] = Post(p[0], p[1], p[2], p[3], eval(p[4]))
+                self.list[i] = Post(p[0], p[1], p[2], p[3], Comment_list)
     
     def print(self):
         for p in self.list:

@@ -26,6 +26,7 @@ def setup_reddit(input_params):
 
 def clear_file(filename): open(filename, "w").close()
 
+# izskaita līnijas failā
 def count_lines(filename):
     line_count = 0
     with open(filename, 'r') as file:
@@ -33,10 +34,12 @@ def count_lines(filename):
             line_count += 1
     return line_count
 
+# komentāra klases objekts, izveidots, lai nākotnē būtu vieglāk darboties ar komentāriem dziļāk
 class Comment:
     def __init__(self, content):
         self.content = content
 
+# iegūt specifiska posta visaugstāk novērtētos komentārus, nesaglabā, ja komentārs ir izdzēsts, komentāru skaits atkarīgs no FETCHED_COMMENT_COUNT
 def fetch_top_comments(item):
     fetched_comments = []
     item.comment_limit = FETCHED_COMMENT_COUNT
@@ -53,6 +56,7 @@ def fetch_top_comments(item):
             fetched_comments.append(Comment(body))
     return fetched_comments
 
+# Post klases objekts ar visu man noderīgo info, ko satur specifisks posts
 class Post:
     def __init__(self, id, subreddit, title, content, top_comments: Comment):
         self.id = id
@@ -61,21 +65,24 @@ class Post:
         self.content = content.replace("\n", "\\n")
         self.top_comments = top_comments
     
+    # radīt jaunu Post klases objektu izmantojot praw, kurš iegūst info no reddit API
     def create(item):
         top_comments = fetch_top_comments(item)
         return Post(f"{item.id}", f"{item.subreddit}", f"{item.title}", f"{item.selftext}", top_comments)
-    
+
+# Postu saraksta objekts, satur sarakstu ar Post klases objektiem un dažādas noderīgas funkcijas
 class PostList:
     def __init__(self):
         self.list = []
         self.post_count = 0
 
-    def add(self, new_post):
+    # pievienot jaunu postu postu sarakstā
+    def add(self, new_post: Post):
         self.list.append(new_post)
         self.post_count += 1
     
     # rakstīt failā bet 'in reverse', lai nebūtu visi jāpārliek par vienu rindiņu uz priekšu, kad seivo jaunus postus (saglabā O(1), kad jāpievieno jauni saglabāti posti)
-    def write_to_file(self, filename):
+    def append_to_file(self, filename):
         with open(filename, "a", encoding="utf-8") as f:
             for i in range(self.post_count-1, -1, -1): # for loop atpakaļgaitā, sākot no pēdējā posta
                 p = self.list[i]
@@ -86,7 +93,7 @@ class PostList:
                     
                 f.write(p.id+"✺⭆"+p.subreddit+"✺⭆"+p.title+"✺⭆"+p.content+"✺⭆"+repr(com_list)+"\n")
                 
-    # ielādēt no faila bet saglabāts tā ka pēdējā līnija ir pirmais elements listā
+    # ielādēt no faila bet saglabāts tā ka pēdējā līnija ir pirmais elements listā, tāpēc pirmo elementu saglabā pēdējajā lista indeksā
     def load_from_file(self, filename):
         line_count = count_lines(POSTS_FILE)
         self.list = [""]*line_count
@@ -102,6 +109,7 @@ class PostList:
                 
                 self.list[i] = Post(p[0], p[1], p[2], p[3], Comment_list)
     
+    # search by subreddit
     def searchby_subreddit(self, subreddits):
         new_postlist = PostList()
         found_count = 0
@@ -115,14 +123,16 @@ class PostList:
         print("\033[1m\33[92m"+f"Atradu {found_count} postus!\n"+"\033[0m")
         return new_postlist
     
+    #print all posts from list in a formatted way
     def print(self):
         for p in self.list:
             com_list = []
             for comment in p.top_comments:
                 com_list.append(comment.content)
             print(f"http://redd.it/{p.id}".ljust(23) + " | r/" + p.subreddit.ljust(22) + " | " + f"{p.title[:20]}...".ljust(24) + " | " + f"{p.content[:50]}...".ljust(54) + " \t| " + f"({len(com_list)} comments)")
-            
-def fetchload_posts(reddit, amount):
+
+# ievākt saglabātos postus no lietotāja reddit profila un saglabāt tos postu failā
+def fetchload_posts(reddit, amount: int):
     saved_count = 0    
     postu_sar = PostList()
     for item in reddit.user.me().saved(limit=amount):
@@ -134,9 +144,9 @@ def fetchload_posts(reddit, amount):
         saved_count += 1
         if (saved_count % 10 == 0):
             print(f"Esmu ieguvis {saved_count} postus. Turpinu...")
-
+            
     clear_file(POSTS_FILE)
-    postu_sar.write_to_file(POSTS_FILE)
+    postu_sar.append_to_file(POSTS_FILE)
     
     print("\033[1m\33[92m"+f"\nIeguvu un saglabāju {saved_count} postus kopumā!\n"+"\033[0m")
     return postu_sar

@@ -77,9 +77,11 @@ if __name__ == '__main__':
                 print("\033[1m\33[92m"+f"\nVeiksmīgi ielādēju {len(default_postu_saraksts.list)} postus no šī faila: "+"\033[0m"+f"{POSTS_FILE}\n")
 #PRINT------------------------------------------------------------------------------------------------------------PRINT
             case "print":
-                print("\033[1m\33[93m"+f"\nIelādēti ir {len(default_postu_saraksts.list)} posti. Printēju tos!\n"+"\033[0m")
-                default_postu_saraksts.print()
-                print()
+                if (default_postu_saraksts.post_count == 0): print("\033[1m\33[93m"+f"\nIelādēti ir 0 posti.\n"+"\033[0m")
+                else:
+                    print("\033[1m\33[93m"+f"\nIelādēti ir {default_postu_saraksts.post_count} posti. Printēju tos!\n"+"\033[0m")
+                    default_postu_saraksts.print()
+                    print()
 #SEARCH-----------------------------------------------------------------------------------------------------------SEARCH
             case "search":
                 if (len(command) < 2):      # komandas parametru daudzuma pārbaude

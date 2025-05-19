@@ -35,13 +35,14 @@ if __name__ == '__main__':
         saved_count += 1
 
     clear_file(POSTS_FILE)
+    
+    print("\nLIST 1")
     postu_sar.write_to_file(POSTS_FILE)
-    print("PRINTING LIST 1\n")
     postu_sar.print()
     
-    postu_sar2 = PostList()
-    postu_sar2.load_from_file(POSTS_FILE, postu_sar.post_count)
-    print("PRINTING LIST 2\n")
-    postu_sar2.print()
+    print("\nLIST 2")
+    subr_list = ["SideProject", "SoloDevelopment"]
+    specific_posts = postu_sar.searchby_subreddit(subr_list)
+    specific_posts.print()
     
     print(saved_count)

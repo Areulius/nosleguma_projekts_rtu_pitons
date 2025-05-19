@@ -100,11 +100,19 @@ class PostList:
                 Comment_list = []
                 for comment_text in eval(p[4]):
                     Comment_list.append(Comment(comment_text))
+                
                 self.list[i] = Post(p[0], p[1], p[2], p[3], Comment_list)
+    
+    def searchby_subreddit(self, subreddits):
+        new_postlist = PostList()
+        for post in self.list:
+            if post.subreddit in (subreddits):
+                new_postlist.add(post)
+        return new_postlist
     
     def print(self):
         for p in self.list:
             com_list = []
             for comment in p.top_comments:
                 com_list.append(comment.content)
-            print(p.id + " | r/" + p.subreddit + " | " + p.title[:20] + "... | " + p.content[:50] + "... | " + repr(com_list))
+            print(p.id + " | r/" + p.subreddit + " | " + p.title[:20] + "... | " + p.content[:50] + "... | " + repr(com_list)[:20])

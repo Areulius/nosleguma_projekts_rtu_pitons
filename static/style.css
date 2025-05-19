@@ -1,3 +1,5 @@
+/* autors Valdis Arelis 231RMC177 */
+
 /* elements */
 a {
   color: black;
@@ -5,7 +7,7 @@ a {
 }
 
 div {
-  background-color: rgb(206, 114, 189);
+  background-color: rgb(243, 140, 224);
   border-color: rgb(255, 255, 255);
   border-style: solid;
   border-width: 1px 1px 1px 1px;
@@ -15,7 +17,7 @@ div {
 }
 
 html {
-  background-color: rgb(18, 18, 18);
+  background-color: rgb(255, 255, 255);
 }
 
 /* classes */

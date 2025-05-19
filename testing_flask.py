@@ -1,7 +1,5 @@
 # autors Valdis Arelis 231RMC177
 
-# NESTRĀDĀ NESTRĀDĀ NESTRĀDĀ NESTRĀDĀ NESTRĀDĀ NESTRĀDĀ NESTRĀDĀ NESTRĀDĀ NESTRĀDĀ 
-
 from flask import Flask, render_template
 from functions.classes import *
 

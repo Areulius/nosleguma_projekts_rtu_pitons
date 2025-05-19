@@ -1,3 +1,5 @@
+<!--autors Valdis Arelis 231RMC177--> 
+
 <!DOCTYPE html>
 
 <html>
@@ -9,8 +11,8 @@
     </head>
 
     <body>
-        <h1>Saved Posts</h1>
-        {% for post in posts %}
+        <h1>Saglabātie posti</h1>
+        {% for post in posts.list %}
 
             <div class="post">
             <h3>(<a href="https://www.reddit.com/r/{{ post.subreddit }}" target="_blank">r/{{ post.subreddit }}</a>) 

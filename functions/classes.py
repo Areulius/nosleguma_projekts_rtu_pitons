@@ -1,3 +1,5 @@
+# autors Valdis Arelis 231RMC177
+
 import praw
 # ✺⭆ : nejauši izvēlēti simboli, lai dators saprastu, kad ir nākamais mainīgais, lasot un rakstot failos (pēc iespējas neiespējamāki, lai nebūtu iespēja, ka parādīsies tekstā)
 

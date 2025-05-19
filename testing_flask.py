@@ -1,5 +1,6 @@
+# autors Valdis Arelis 231RMC177
+
 from flask import Flask, render_template
-import json
 from functions.functions import *
 
 app = Flask(__name__)

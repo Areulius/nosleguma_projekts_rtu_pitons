@@ -1,6 +1,7 @@
+# autors Valdis Arelis 231RMC177
+
 import praw
 from functions.classes import *
-# from openai import OpenAI
 
 if __name__ == '__main__':
 

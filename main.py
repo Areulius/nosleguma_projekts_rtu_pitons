@@ -11,7 +11,7 @@ if __name__ == '__main__':
                                                                    
     print(" ______   ______   ______   ______   ______   ______")
     print("/_____/  /_____/  /_____/  /_____/  /_____/  /_____/")
-    print("\033[1m\33[92m"+"\nSveicināti, reddit saglabāto postu kārtotājā!"+"\033[0m")
+    print("\033[1m\33[92m"+"\nSveicināti, reddit saglabāto postu apstrādātājā!"+"\033[0m")
     print("\033[0;36m"+"(Autors: Valdis Arelis 231RMC177 11.grupa)\n"+"\033[0m")
     print("Izmantojiet komandu '"+"\033[1m"+"login"+"\033[0m"+"', lai ielogotos savā reddit profilā!")
     print("Izmantojiet komandu '"+"\033[1m"+"help"+"\033[0m"+"', lai redzētu visas pieejamās komandas!\n")

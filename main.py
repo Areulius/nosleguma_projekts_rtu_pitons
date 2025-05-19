@@ -2,47 +2,88 @@ import praw
 from functions.classes import *
 # from openai import OpenAI
 
-# konstantes
-POSTS_FILE = "txt_files/posts.txt"
-COMMENTS_FILE = "txt_files/comments.txt"
-
 if __name__ == '__main__':
 
-    reddit = setup_reddit()
-    saved_count = 0
+    reddit = 0
+    logged_in = False
     command = [""]
+    default_postu_saraksts = PostList()
     
-    # while command[0] != "exit":
-    #     command = input("Command: ").split()
+    print("\033[1m\33[92m"+"\nSveicināti, reddit saglabāto postu kārtotājā!"+"\033[0m")
+    print("Izmantojiet komandu '"+"\033[1m"+"login"+"\033[0m"+"', lai ielogotos savā reddit profilā!")
+    print("Izmantojiet komandu '"+"\033[1m"+"help"+"\033[0m"+"', lai redzētu visas pieejamās komandas!\n")
+    while command[0] != "exit":
+        command = input("\033[1m"+"Komanda: "+"\033[0m").split()
         
-    #     match command[0]:
-    #         case "print":
-    #             print("print case")
-    #         case "exit":
-    #             print("Exiting! :)")
-    #         case _:
-    #             print("default case")
-           
-    # iet cauri visiem lietotāja saglabātajiem postiem un komentāriem un saglabāt tos sarakstā     
-    postu_sar = PostList()
-    for item in reddit.user.me().saved(limit=3):
-        
-        if isinstance(item, praw.models.Comment): # ja saglabāts ir komentārs, tad fokuss tiek mainīts uz postu virs komentāra
-            print("COMMENT")
-            item = reddit.submission(item.link_id[3:])
-        postu_sar.add(Post.create(item))
-
-        saved_count += 1
-
-    clear_file(POSTS_FILE)
-    
-    print("\nLIST 1")
-    postu_sar.write_to_file(POSTS_FILE)
-    postu_sar.print()
-    
-    print("\nLIST 2")
-    subr_list = ["SideProject", "SoloDevelopment"]
-    specific_posts = postu_sar.searchby_subreddit(subr_list)
-    specific_posts.print()
-    
-    print(saved_count)
+        match command[0]:
+            case "help":
+                print("\033[1m\33[4m"+"\nKomandu saraksts:"+"\033[0m")
+                print("\033[1m"+"login <'client_id:client_secret:agent_name:username:password'>"+"\033[0m"+" : ielogoties savā reddit profilā (jābūt uztaisītam 'user agent')")
+                print("\033[1m"+"fetch <skaits>"+"\033[0m"+" : ievāc un ielādē noteiktu skaitu saglabāto postu no ielogotā reddit profila un saglabā tos failā posts.txt")
+                print("\033[1m"+"load"+"\033[0m"+" : ielādē visus iepriekš saglabātos datus par postiem")
+                print("\033[1m"+"print"+"\033[0m"+" : izprintē šobrīd ielādētos postus")
+                print("\033[1m"+"search <subreddits[]>"+"\033[0m"+" : meklēt visus saglabātos postus zem šī/-iem subreddit")
+                print()
+            case "login":
+                if (len(command) != 2):
+                    print("\nFormāts: login <'client_id:client_secret:agent_name:username:password'>\n")
+                    continue
+                
+                input_params = command[1].split(":")
+                if len(input_params) != 5:
+                    print("\nLūdzu tieši 5 parametrus <'client_id:client_secret:agent_name:username:password'>\n")
+                    continue
+                
+                reddit = setup_reddit(input_params)
+                if (reddit is not int):
+                    print("\033[1m\33[92m"+"\nVeiksmīga ielogošanās!\n"+"\033[0m")
+                    logged_in = True
+                    continue
+                elif (reddit == 1):
+                    print("\33[91m"+"\nVismaz viens no parametriem nav pareizs\n"+"\033[0m")
+                    continue
+                else:
+                    print("\33[91m"+"\nKaut kas nogāja greizi :(\n"+"\033[0m")
+                    continue
+            case "fetch":
+                if (len(command) != 2):
+                    print("\nFormāts: fetch <skaits>\n")
+                    continue
+                if (command[1].isnumeric()):
+                    command[1] = int(command[1])
+                else:
+                    print("\nLūdzu ievadīt int tipa skaitu\n")
+                    continue
+                if (logged_in != True):
+                    print("\nLietotājs nav ielogojies\n")
+                    continue
+                try:
+                    print("\nIegūstu postus... (Iespējams būs mazliet jāuzgaida)\n")
+                    default_postu_saraksts = fetchload_posts(reddit, command[1])
+                except:
+                    print("\33[91m"+"\nKaut kas nogāja greizi :(\n"+"\033[0m")
+                    continue
+            case "load":
+                default_postu_saraksts.load_from_file(POSTS_FILE)
+                print("\033[1m\33[92m"+f"\nVeiksmīgi ielādēju {len(default_postu_saraksts.list)} postus no šī faila: "+"\033[0m"+f"{POSTS_FILE}\n")
+            case "print":
+                print("\033[1m\33[93m"+f"\nIelādēti ir {len(default_postu_saraksts.list)} posti. Printēju tos!\n"+"\033[0m")
+                default_postu_saraksts.print()
+                print()
+            case "search":
+                if (len(command) < 2):
+                    print("\nFormāts: search <subreddits[]>\n")
+                    continue
+                subreddits = command[1:]
+                print("\033[1m"+"\nMeklēju"+"\033[0m"+"... ( vaicājums: ", end="")
+                for subr in subreddits:
+                    print(subr + " ", end="")
+                print(")")
+                
+                results_list = default_postu_saraksts.searchby_subreddit(subreddits)
+                results_list.print()
+                
+            case "exit":
+                print("\033[1m\33[93m"+"\nSlēdzos ārā! :)"+"\033[0m")
+            case _:
+                print("\nNezināma komanda! Izmanto '"+"\033[1m"+"help"+"\033[0m"+"', lai redzētu visas komandas\n")

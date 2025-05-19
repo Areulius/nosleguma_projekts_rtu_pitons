@@ -3,37 +3,35 @@ import praw
 
 #konstantes
 FETCHED_COMMENT_COUNT = 3
+POSTS_FILE = "txt_files/posts.txt"
 
-def setup_reddit():
+# ielogošanās reddit profilā
+def setup_reddit(input_params):
 
-    # infinitely asking for input until correct
-    correct_input = False
-    while correct_input == False:
-        input_params = input("Login with praw parameters (format = 'c_id:c_secret:agent:user:pass') : ").split(":")
-
-        # test if not enough paramaters
-        if len(input_params) != 5:
-            print("Please provide exactly 5 parameters")
-            continue
-
-        # setup reddit
-        reddit = praw.Reddit(
-            client_id= input_params[0],
-            client_secret= input_params[1],
-            user_agent= input_params[2],
-            username= input_params[3],
-            password= input_params[4]
-        )
+    reddit = praw.Reddit(
+        client_id= input_params[0],
+        client_secret= input_params[1],
+        user_agent= input_params[2],
+        username= input_params[3],
+        password= input_params[4]
+    )
         
-        # test if params are correct
-        try: 
-            reddit.user.me()
-        except:
-            print("Atleast one of the parameters is incorrect")
-        correct_input = True
+    # pārbaude vai parametri ir pareizi
+    try: 
+        reddit.user.me()
+    except:
+        return 1
+        
     return reddit
 
 def clear_file(filename): open(filename, "w").close()
+
+def count_lines(filename):
+    line_count = 0
+    with open(filename, 'r') as file:
+        for line in file:
+            line_count += 1
+    return line_count
 
 class Comment:
     def __init__(self, content):
@@ -89,7 +87,8 @@ class PostList:
                 f.write(p.id+"✺⭆"+p.subreddit+"✺⭆"+p.title+"✺⭆"+p.content+"✺⭆"+repr(com_list)+"\n")
                 
     # ielādēt no faila bet saglabāts tā ka pēdējā līnija ir pirmais elements listā
-    def load_from_file(self, filename, line_count):
+    def load_from_file(self, filename):
+        line_count = count_lines(POSTS_FILE)
         self.list = [""]*line_count
         with open(filename, "r", encoding="utf-8") as f:
             i = line_count
@@ -105,9 +104,15 @@ class PostList:
     
     def searchby_subreddit(self, subreddits):
         new_postlist = PostList()
+        found_count = 0
+        for subr in subreddits:
+            subr = subr.lower()
         for post in self.list:
-            if post.subreddit in (subreddits):
-                new_postlist.add(post)
+            for subr in subreddits:
+                if (post.subreddit.lower().find(subr) != -1):
+                    new_postlist.add(post)
+                    found_count += 1
+        print("\033[1m\33[92m"+f"Atradu {found_count} postus!\n"+"\033[0m")
         return new_postlist
     
     def print(self):
@@ -115,4 +120,23 @@ class PostList:
             com_list = []
             for comment in p.top_comments:
                 com_list.append(comment.content)
-            print(p.id + " | r/" + p.subreddit + " | " + p.title[:20] + "... | " + p.content[:50] + "... | " + repr(com_list)[:20])
+            print(f"http://redd.it/{p.id}".ljust(23) + " | r/" + p.subreddit.ljust(22) + " | " + f"{p.title[:20]}...".ljust(24) + " | " + f"{p.content[:50]}...".ljust(54) + " \t| " + f"({len(com_list)} comments)")
+            
+def fetchload_posts(reddit, amount):
+    saved_count = 0    
+    postu_sar = PostList()
+    for item in reddit.user.me().saved(limit=amount):
+        
+        if isinstance(item, praw.models.Comment): # ja saglabāts ir komentārs, tad fokuss tiek mainīts uz postu virs komentāra
+            item = reddit.submission(item.link_id[3:])
+        postu_sar.add(Post.create(item))
+
+        saved_count += 1
+        if (saved_count % 10 == 0):
+            print(f"Esmu ieguvis {saved_count} postus. Turpinu...")
+
+    clear_file(POSTS_FILE)
+    postu_sar.write_to_file(POSTS_FILE)
+    
+    print("\033[1m\33[92m"+f"\nIeguvu un saglabāju {saved_count} postus kopumā!\n"+"\033[0m")
+    return postu_sar

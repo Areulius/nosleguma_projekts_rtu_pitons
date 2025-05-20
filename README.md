@@ -46,15 +46,15 @@ Lai saglabātu un nolasītu datus izmantotas funkcijas append_to_file() un load_
 Ievērojama detaļa ir saistībā ar to, kādā virzienā posti tiek rakstīti un lasīti. Tie tiek rakstīti tā, lai posti, kas saglabāti pēdējie ir faila apakšā. Kaut arī PRAW datus iegūst sākot ar pašu pēdējo saglabāto postu. Tā tas tiek darīts, lai nākotnē, iegūstot saglabātos postus būtu iespējams neiet tiem visiem cauri, bet vienkārši pievienot jaunos pašā apakšā, tādējādi ievērojami ietaupot laiku, jo postu iegūšana nav pārāk ātra.  
 
 #### Datu parādīšana
-Šobrīd ir implementēta vienkārša print funkcija, kas sekojoši noformatē ielādētos datus.  
+Šobrīd ir implementēta vienkārša PostList.print() funkcija, kas sekojoši noformatē un izprintē ielādētos datus.  
 ![image](https://github.com/user-attachments/assets/57cce701-a1ac-4cde-a0cd-83049d50772e)  
 
 #### Meklēšana starp postiem
-Meklēšanas funkcija šobrīd spēj meklēt tikai starp subredditiem, vienkārši izejot tiem cauri un atsevišķā PostList objektā saglabājot postus, kuru subreddita nosaukumā ietilpst kāds no vaicājumiem. Iespējami daudz uzlabojumi.  
+Tiek izmantota funkcija searchby_subreddit(). Meklēšanas funkcija šobrīd spēj meklēt tikai starp subredditiem, vienkārši izejot tiem cauri un atsevišķā PostList objektā saglabājot postus, kuru subreddita nosaukumā ietilpst kāds no vaicājumiem. Iespējami daudz uzlabojumi.  
 ![image](https://github.com/user-attachments/assets/0e5625d0-353c-4d27-b727-4ccec241260d)
 
-## Nākotnes iespējas
-• Protams, izdarīt visu ieplānoto.
-• Padarīt ielogošanos vieglāku.
-• Ievērojami uzlabot search iespējas.
-• To visu skaisti attēlot interneta pārlūkā izmantojot flask.
+## Nākotnes iespējas  
+• Protams, izdarīt visu ieplānoto.  
+• Padarīt ielogošanos vieglāku.  
+• Ievērojami uzlabot search iespējas.  
+• To visu skaisti attēlot interneta pārlūkā izmantojot flask.  

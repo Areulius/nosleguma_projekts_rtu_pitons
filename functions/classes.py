@@ -110,6 +110,7 @@ class PostList:
                     Comment_list.append(Comment(comment_text))
                 
                 self.list[i] = Post(p[0], p[1], p[2], p[3], Comment_list)
+                self.post_count += 1
     
     # search by subreddit
     def searchby_subreddit(self, subreddits):

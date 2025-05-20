@@ -1,6 +1,6 @@
 # Reddit saglabāto postu apstrādātājs
 Autors: Valdis Arelis 231RMC177 11.grupa  
-Nepieciešamā bibliotēkas: PRAW, flask (tikai, ja vēlas pamēģināt rādīt datus browserī, priekš main.py šī nav vajadzīga) 
+Nepieciešamās bibliotēkas: PRAW, flask (tikai, ja vēlas pamēģināt rādīt datus browserī, priekš main.py šī nav vajadzīga) 
 
 ---
 
